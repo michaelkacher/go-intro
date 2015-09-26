@@ -8,9 +8,18 @@ type user struct {
 	email string
 }
 
-// a plain function
-func hello() {
-	fmt.Println("hello world")
+// notice how user is embeded
+// go does not have inheritance, you extend through composition
+type contractor struct {
+	user
+	rate        int
+	hoursWorked int
+}
+
+// creating another struct wither 'user' embedded
+type employee struct {
+	user
+	rate int
 }
 
 // there are no classes in go
@@ -21,15 +30,19 @@ func (u user) msg() {
 }
 
 func main() {
-	hello()
-
-	var u1 user
-	u1.name = "Bob"
-	u1.msg()
-
 	// the := is implicitly determines type at compile time
 	// this user in create with a composite literal, it looks like json
 	// useful in constructors
-	u2 := user{name: "Test User", email: "testuser@domain.com"}
-	u2.msg()
+	u := user{name: "Test User", email: "testuser@domain.com"}
+	u.msg()
+
+	contractor := contractor{user: user{name: "Contractor Cole", email: "Cole@domain.com"}, rate: 22, hoursWorked: 55}
+	// notice how we can call the embedded user method 'msg()'
+	contractor.user.msg()
+	// this method is promoted up, we don't have to include the embedded user
+	contractor.msg()
+
+	// compsite literals can explicitly list the fields like above or be composed of just the values
+	e := employee{user{"Employee Edward", "Edward@domain.com"}, 15}
+	e.msg()
 }
